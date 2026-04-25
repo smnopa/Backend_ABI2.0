@@ -6,12 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * MÓDULO: Acta de Reunión — Estudiante 1
- *
- * TODO: Ajustar $fillable con los campos reales del formato físico.
- * TODO: Agregar relaciones con Project, User (elaborado_por), etc.
- */
 class ActaReunion extends Model
 {
     use HasFactory, SoftDeletes;
@@ -19,31 +13,109 @@ class ActaReunion extends Model
     protected $table = 'actas_reunion';
 
     protected $fillable = [
-        // TODO: Completar con todos los campos del formato físico
+        /*
+        |--------------------------------------------------------------------------
+        | RELACIONES
+        |--------------------------------------------------------------------------
+        */
+
         'project_id',
         'elaborado_por',
-        'fecha_reunion',
-        'lugar',
-        'asistentes',
-        'temas_tratados',
-        'acuerdos',
-        'compromisos',
-        'proxima_reunion',
+
+        /*
+        |--------------------------------------------------------------------------
+        | INFORMACIÓN GENERAL
+        |--------------------------------------------------------------------------
+        */
+
+        'tema_agenda_propuesta',
+        'investigador_nombre',
+        'grupo_investigacion',
+        'programa_academico',
+        'fecha_realizacion',
+        'medio_ubicacion',
+        'hora_inicial',
+        'hora_finaliza',
+        'orden_dia',
+
+        /*
+        |--------------------------------------------------------------------------
+        | ASISTENTES
+        |--------------------------------------------------------------------------
+        */
+
+        'asistentes_listado',
+        'docentes_asistentes',
+        'estudiantes_asistentes',
+
+        /*
+        |--------------------------------------------------------------------------
+        | DESARROLLO DE LA REUNIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        'desarrollo_reunion',
+
+        /*
+        |--------------------------------------------------------------------------
+        | PLAN DE ACCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        'actividades',
+        'responsable',
+        'fecha_limite',
+        'evidencia',
+
+        /*
+        |--------------------------------------------------------------------------
+        | EFICACIA DE LA REUNIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        'eficacia_reunion',
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRÓXIMA REUNIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        'proxima_reunion_fecha',
+        'proxima_reunion_lugar',
+        'proxima_reunion_hora',
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIRMAS
+        |--------------------------------------------------------------------------
+        */
+
+        'preparado_por',
+        'aprobado_por',
+        'revisado_por',
+        'aprobado_por_director',
     ];
 
     protected $casts = [
-        'fecha_reunion'   => 'date',
-        'proxima_reunion' => 'date',
+        'fecha_realizacion' => 'date',
+        'fecha_limite' => 'date',
+        'proxima_reunion_fecha' => 'date',
     ];
 
-    // TODO: Descomentar y ajustar relaciones según el diseño final
-    // public function project()
-    // {
-    //     return $this->belongsTo(Project::class);
-    // }
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIONES
+    |--------------------------------------------------------------------------
+    */
 
-    // public function elaboradoPor()
-    // {
-    //     return $this->belongsTo(User::class, 'elaborado_por');
-    // }
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function elaboradoPor()
+    {
+        return $this->belongsTo(User::class, 'elaborado_por');
+    }
 }
