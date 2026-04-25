@@ -9,8 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * MÓDULO: Ficha de Propuesta de Tema al Banco de Proyectos Docentes — Estudiante 3
  *
- * TODO: Ajustar $fillable con los campos reales del formato físico.
- * TODO: Agregar relaciones con Professor, Program, InvestigationLine, ThematicArea.
+ * Campos del formulario organizados en 5 secciones:
+ * 1. Información General: ciudad, fecha_propuesta, cantidad_estudiantes, tiempo_ejecucion_meses
+ * 2. Datos del Tema: titulo_propuesta, tipo_investigacion, linea_investigacion_id, area_tematica_id
+ * 3. Objetivos: objetivo_general, objetivo_especifico_1/2/3
+ * 4. Pertinencia y Viabilidad: pertinencia_grupo_investigacion, disponibilidad_docentes, etc.
+ * 5. Descripción: descripcion, ods_objetivos_desarrollo_sostenible, plan_desarrollo_nacional_departamental_municipal
  */
 class FichaPropuesta extends Model
 {
@@ -19,15 +23,38 @@ class FichaPropuesta extends Model
     protected $table = 'fichas_propuesta';
 
     protected $fillable = [
-        // TODO: Completar con todos los campos del formato físico
+        // Información General
         'professor_id',
         'programa_id',
+        'ciudad',
+        'fecha_propuesta',
+        'cantidad_estudiantes',
+        'tiempo_ejecucion_meses',
+        
+        // Datos del Tema
         'titulo_propuesta',
-        'descripcion',
-        'objetivos',
+        'tipo_investigacion',
         'linea_investigacion_id',
         'area_tematica_id',
-        'fecha_propuesta',
+        
+        // Objetivos
+        'objetivo_general',
+        'objetivo_especifico_1',
+        'objetivo_especifico_2',
+        'objetivo_especifico_3',
+        
+        // Pertinencia y Viabilidad
+        'pertinencia_grupo_investigacion',
+        'disponibilidad_docentes',
+        'calidad_correspondencia_titulo_objetivos',
+        'recursos_requeridos',
+        
+        // Descripción y Contexto
+        'descripcion',
+        'ods_objetivos_desarrollo_sostenible',
+        'plan_desarrollo_nacional_departamental_municipal',
+        
+        // Estado
         'estado',
     ];
 
@@ -35,24 +62,23 @@ class FichaPropuesta extends Model
         'fecha_propuesta' => 'date',
     ];
 
-    // TODO: Descomentar y ajustar relaciones según el diseño final
-    // public function professor()
-    // {
-    //     return $this->belongsTo(Professor::class);
-    // }
+    public function professor()
+    {
+        return $this->belongsTo(Professor::class);
+    }
 
-    // public function programa()
-    // {
-    //     return $this->belongsTo(Program::class, 'programa_id');
-    // }
+    public function programa()
+    {
+        return $this->belongsTo(Program::class, 'programa_id');
+    }
 
-    // public function lineaInvestigacion()
-    // {
-    //     return $this->belongsTo(InvestigationLine::class, 'linea_investigacion_id');
-    // }
+    public function lineaInvestigacion()
+    {
+        return $this->belongsTo(InvestigationLine::class, 'linea_investigacion_id');
+    }
 
-    // public function areaTematica()
-    // {
-    //     return $this->belongsTo(ThematicArea::class, 'area_tematica_id');
-    // }
+    public function areaTematica()
+    {
+        return $this->belongsTo(ThematicArea::class, 'area_tematica_id');
+    }
 }
