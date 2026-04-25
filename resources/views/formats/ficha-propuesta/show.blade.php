@@ -3,45 +3,58 @@
 @section('title', 'Ficha de Propuesta #' . $fichaPropuesta->id)
 
 @section('content')
+
 <div class="page-header d-print-none">
     <div class="container-xl">
         <div class="row g-2 align-items-center">
+
             <div class="col-auto">
                 <a href="{{ route('formatos.ficha-propuesta.index') }}" class="btn btn-ghost-secondary">
-                    <i class="ti ti-arrow-left me-1"></i> Volver
+                    <i class="ti ti-arrow-left me-1"></i>
+                    Volver
                 </a>
             </div>
+
             <div class="col">
-                <h2 class="page-title">{{ $fichaPropuesta->titulo_propuesta }}</h2>
+                <h2 class="page-title">
+                    {{ $fichaPropuesta->titulo_propuesta }}
+                </h2>
+
+                <p class="text-muted mb-0">
+                    {{ $fichaPropuesta->fecha_propuesta?->format('d/m/Y') ?? 'Sin fecha' }}
+                </p>
             </div>
+
             <div class="col-auto ms-auto d-print-none">
-                <a href="{{ route('formatos.ficha-propuesta.edit', $fichaPropuesta) }}" class="btn btn-secondary">
-                    <i class="ti ti-edit me-1"></i> Editar
+                <a href="{{ route('formatos.ficha-propuesta.edit', $fichaPropuesta) }}"
+                   class="btn btn-primary">
+                    <i class="ti ti-edit me-1"></i>
+                    Editar
                 </a>
             </div>
+
         </div>
     </div>
 </div>
 
 <div class="page-body">
     <div class="container-xl">
-        <!-- Estado -->
-        <div class="row mb-3">
-            <div class="col-12">
-                @php
-                    $badgeClass = match($fichaPropuesta->estado) {
-                        'aprobada'  => 'bg-success',
-                        'rechazada' => 'bg-danger',
-                        default     => 'bg-warning text-dark',
-                    };
-                @endphp
-                <span class="badge {{ $badgeClass }} fs-5">{{ ucfirst($fichaPropuesta->estado) }}</span>
-            </div>
+
+        {{-- Estado --}}
+        <div class="mb-3">
+            @php
+                $badgeClass = match($fichaPropuesta->estado) {
+                    'aprobada'  => 'bg-success',
+                    'rechazada' => 'bg-danger',
+                    default     => 'bg-warning text-dark',
+                };
+            @endphp
+            <span class="badge {{ $badgeClass }} fs-5">{{ ucfirst($fichaPropuesta->estado) }}</span>
         </div>
 
-        <!-- Sección 1: Información General -->
+        {{-- Sección 1: Información General --}}
         <div class="card mb-3">
-            <div class="card-header bg-light">
+            <div class="card-header">
                 <h3 class="card-title">1. Información General</h3>
             </div>
             <div class="card-body">
@@ -66,9 +79,9 @@
             </div>
         </div>
 
-        <!-- Sección 2: Datos del Tema -->
+        {{-- Sección 2: Datos del Tema --}}
         <div class="card mb-3">
-            <div class="card-header bg-light">
+            <div class="card-header">
                 <h3 class="card-title">2. Datos del Tema</h3>
             </div>
             <div class="card-body">
@@ -79,17 +92,10 @@
                     <dt class="col-sm-3">Tipo de Investigación</dt>
                     <dd class="col-sm-9">
                         @switch($fichaPropuesta->tipo_investigacion)
-                            @case('documental')
-                                Documental
-                                @break
-                            @case('experimental')
-                                Experimental
-                                @break
-                            @case('campo')
-                                De Campo
-                                @break
-                            @default
-                                —
+                            @case('documental') Documental @break
+                            @case('experimental') Experimental @break
+                            @case('campo') De Campo @break
+                            @default —
                         @endswitch
                     </dd>
 
@@ -102,9 +108,9 @@
             </div>
         </div>
 
-        <!-- Sección 3: Objetivos -->
+        {{-- Sección 3: Objetivos --}}
         <div class="card mb-3">
-            <div class="card-header bg-light">
+            <div class="card-header">
                 <h3 class="card-title">3. Objetivos</h3>
             </div>
             <div class="card-body">
@@ -128,9 +134,9 @@
             </div>
         </div>
 
-        <!-- Sección 4: Pertinencia y Viabilidad -->
+        {{-- Sección 4: Pertinencia y Viabilidad --}}
         <div class="card mb-3">
-            <div class="card-header bg-light">
+            <div class="card-header">
                 <h3 class="card-title">4. Pertinencia, Viabilidad y Recursos</h3>
             </div>
             <div class="card-body">
@@ -150,9 +156,9 @@
             </div>
         </div>
 
-        <!-- Sección 5: Descripción y Contexto -->
+        {{-- Sección 5: Descripción y Contexto --}}
         <div class="card mb-3">
-            <div class="card-header bg-light">
+            <div class="card-header">
                 <h3 class="card-title">5. Descripción y Contexto</h3>
             </div>
             <div class="card-body">
@@ -161,7 +167,7 @@
                     <dd class="col-sm-9">{{ $fichaPropuesta->descripcion ?? '—' }}</dd>
 
                     @if ($fichaPropuesta->ods_objetivos_desarrollo_sostenible)
-                        <dt class="col-sm-3">Objetivos de Desarrollo Sostenible (ODS)</dt>
+                        <dt class="col-sm-3">ODS</dt>
                         <dd class="col-sm-9">{{ $fichaPropuesta->ods_objetivos_desarrollo_sostenible }}</dd>
                     @endif
 
@@ -173,7 +179,7 @@
             </div>
         </div>
 
-        <!-- Fecha de Creación -->
+        {{-- Metadatos --}}
         <div class="card">
             <div class="card-body text-muted">
                 <small>
@@ -184,70 +190,8 @@
                 </small>
             </div>
         </div>
-    </div>
-</div>
-@endsection
-@extends('tablar::page')
 
-@section('title', 'Ficha de Propuesta #' . $fichaPropuesta->id)
-
-@section('content')
-<div class="page-header d-print-none">
-    <div class="container-xl">
-        <div class="row g-2 align-items-center">
-            <div class="col-auto">
-                <a href="{{ route('formatos.ficha-propuesta.index') }}" class="btn btn-ghost-secondary">
-                    <i class="ti ti-arrow-left me-1"></i> Volver
-                </a>
-            </div>
-            <div class="col">
-                <h2 class="page-title">{{ $fichaPropuesta->titulo_propuesta }}</h2>
-            </div>
-            <div class="col-auto ms-auto d-print-none">
-                <a href="{{ route('formatos.ficha-propuesta.edit', $fichaPropuesta) }}" class="btn btn-secondary">
-                    <i class="ti ti-edit me-1"></i> Editar
-                </a>
-                {{-- TODO: Agregar botón de exportar a PDF --}}
-            </div>
-        </div>
     </div>
 </div>
 
-<div class="page-body">
-    <div class="container-xl">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Detalle de la Ficha</h3>
-                <div class="card-options">
-                    @php
-                        $badgeClass = match($fichaPropuesta->estado) {
-                            'aprobada'  => 'bg-success',
-                            'rechazada' => 'bg-danger',
-                            default     => 'bg-warning text-dark',
-                        };
-                    @endphp
-                    <span class="badge {{ $badgeClass }} fs-5">{{ ucfirst($fichaPropuesta->estado) }}</span>
-                </div>
-            </div>
-            <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-3">Título de la Propuesta</dt>
-                    <dd class="col-sm-9">{{ $fichaPropuesta->titulo_propuesta }}</dd>
-
-                    <dt class="col-sm-3">Fecha de Propuesta</dt>
-                    <dd class="col-sm-9">{{ $fichaPropuesta->fecha_propuesta?->format('d/m/Y') ?? '—' }}</dd>
-
-                    <dt class="col-sm-3">Descripción</dt>
-                    <dd class="col-sm-9">{{ $fichaPropuesta->descripcion }}</dd>
-
-                    <dt class="col-sm-3">Objetivos</dt>
-                    <dd class="col-sm-9">{{ $fichaPropuesta->objetivos }}</dd>
-
-                    {{-- TODO: Mostrar línea de investigación, área temática, programa --}}
-                    {{-- TODO: Mostrar campos adicionales del formato físico --}}
-                </dl>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
