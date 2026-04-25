@@ -1,120 +1,149 @@
-@extends('tablar::page')
+<div class="row">
 
-@section('title', 'Ideas de Estudiante')
+    {{-- INFORMACIÓN BÁSICA --}}
 
-@section('content')
-
-<div class="page-header d-print-none">
-    <div class="container-xl">
-        <div class="row g-2 align-items-center">
-            <div class="col">
-                <h2 class="page-title">Ideas de Estudiante</h2>
-            </div>
-            <div class="col-auto ms-auto">
-                <a href="{{ route('formatos.ideas-estudiante.create') }}" class="btn btn-success">
-                    <i class="ti ti-plus me-1"></i> Nueva Idea
-                </a>
-            </div>
-        </div>
+    <div class="col-md-12">
+        <h3>Información Básica</h3>
+        <hr>
     </div>
-</div>
 
-<div class="page-body">
-    <div class="container-xl">
-
-        {{-- MENSAJE DE ÉXITO --}}
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Listado de Ideas</h3>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-vcenter table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Título</th>
-                            <th>Docente</th>
-                            <th>Concepto</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($ideas as $idea)
-                            <tr>
-                                <td>{{ $idea->id }}</td>
-
-                                <td>
-                                    <strong>{{ $idea->titulo }}</strong>
-                                </td>
-
-                                <td>{{ $idea->docente ?? '—' }}</td>
-
-                                <td>
-                                    @if($idea->concepto === 'aprobada')
-                                        <span class="badge bg-success">Aprobada</span>
-                                    @elseif($idea->concepto === 'no_aprobada')
-                                        <span class="badge bg-danger">No aprobada</span>
-                                    @else
-                                        <span class="badge bg-secondary">Sin definir</span>
-                                    @endif
-                                </td>
-
-                                <td class="text-end">
-                                    <div class="btn-list justify-content-end">
-
-                                        {{-- VER --}}
-                                        <a href="{{ route('formatos.ideas-estudiante.show', $idea) }}"
-                                           class="btn btn-icon btn-primary btn-sm"
-                                           title="Ver">
-                                            <i class="ti ti-eye"></i>
-                                        </a>
-
-                                        {{-- EDITAR --}}
-                                        <a href="{{ route('formatos.ideas-estudiante.edit', $idea) }}"
-                                           class="btn btn-icon btn-warning btn-sm"
-                                           title="Editar">
-                                            <i class="ti ti-edit"></i>
-                                        </a>
-
-                                        {{-- ELIMINAR --}}
-                                        <form action="{{ route('formatos.ideas-estudiante.destroy', $idea) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('¿Seguro que deseas eliminar esta idea?');">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button class="btn btn-icon btn-danger btn-sm" title="Eliminar">
-                                                <i class="ti ti-trash"></i>
-                                            </button>
-                                        </form>
-
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">
-                                    No hay ideas registradas.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            {{-- PAGINACIÓN --}}
-            <div class="card-footer">
-                {{ $ideas->links() }}
-            </div>
-        </div>
+    <div class="col-md-8 mb-3">
+        <label class="form-label">Título de la Idea</label>
+        <input type="text" name="titulo" class="form-control"
+            value="{{ old('titulo', $idea->titulo ?? '') }}"
+            placeholder="Nombre tentativo del proyecto" required>
+        @error('titulo')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
     </div>
-</div>
 
-@endsection
+    <div class="col-md-4 mb-3">
+        <label class="form-label">Docente</label>
+        <input type="text" name="docente" class="form-control"
+            value="{{ old('docente', $idea->docente ?? '') }}"
+            placeholder="Nombre del docente">
+        @error('docente')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    {{-- CONCEPTO DE EVALUACIÓN --}}
+
+    <div class="col-md-12">
+        <h3>Concepto de Evaluación</h3>
+        <hr>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label">Concepto</label>
+        <select name="concepto" class="form-select">
+            <option value="">Sin definir</option>
+            <option value="aprobada"
+                {{ old('concepto', $idea->concepto ?? '') === 'aprobada' ? 'selected' : '' }}>
+                Aprobada
+            </option>
+            <option value="no_aprobada"
+                {{ old('concepto', $idea->concepto ?? '') === 'no_aprobada' ? 'selected' : '' }}>
+                No aprobada
+            </option>
+        </select>
+        @error('concepto')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    {{-- CRITERIOS DE EVALUACIÓN --}}
+
+    <div class="col-md-12">
+        <h3>Criterios de Evaluación</h3>
+        <hr>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-check">
+            <input type="checkbox" name="viabilidad" class="form-check-input"
+                {{ old('viabilidad', $idea->viabilidad ?? false) ? 'checked' : '' }}>
+            <span class="form-check-label">Viabilidad</span>
+        </label>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-check">
+            <input type="checkbox" name="pertinencia" class="form-check-input"
+                {{ old('pertinencia', $idea->pertinencia ?? false) ? 'checked' : '' }}>
+            <span class="form-check-label">Pertinencia con el Programa</span>
+        </label>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-check">
+            <input type="checkbox" name="disponibilidad_docentes" class="form-check-input"
+                {{ old('disponibilidad_docentes', $idea->disponibilidad_docentes ?? false) ? 'checked' : '' }}>
+            <span class="form-check-label">Disponibilidad de Docentes</span>
+        </label>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-check">
+            <input type="checkbox" name="calidad_titulo_objetivos" class="form-check-input"
+                {{ old('calidad_titulo_objetivos', $idea->calidad_titulo_objetivos ?? false) ? 'checked' : '' }}>
+            <span class="form-check-label">Calidad Título vs Objetivos</span>
+        </label>
+    </div>
+
+    {{-- OBSERVACIONES --}}
+
+    <div class="col-md-12">
+        <h3>Observaciones</h3>
+        <hr>
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <label class="form-label">Observaciones</label>
+        <textarea name="observaciones" class="form-control" rows="4"
+            placeholder="Observaciones generales sobre la idea">{{ old('observaciones', $idea->observaciones ?? '') }}</textarea>
+        @error('observaciones')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    {{-- REGISTRO Y SEGUIMIENTO --}}
+
+    <div class="col-md-12">
+        <h3>Registro y Seguimiento</h3>
+        <hr>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">N° Acta</label>
+        <input type="text" name="numero_acta" class="form-control"
+            value="{{ old('numero_acta', $idea->numero_acta ?? '') }}"
+            placeholder="Número de acta">
+        @error('numero_acta')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">VoBo. Dirección de Investigaciones</label>
+        <input type="text" name="vobo" class="form-control"
+            value="{{ old('vobo', $idea->vobo ?? '') }}"
+            placeholder="Visto bueno">
+        @error('vobo')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    {{-- BOTÓN --}}
+
+    <div class="col-md-12 mt-4">
+        <button type="submit" class="btn btn-primary">
+            Guardar Idea
+        </button>
+
+        <a href="{{ route('formatos.ideas-estudiante.index') }}" class="btn btn-secondary">
+            Cancelar
+        </a>
+    </div>
+
+</div>

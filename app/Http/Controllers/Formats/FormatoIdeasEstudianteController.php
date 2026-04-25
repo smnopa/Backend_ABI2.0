@@ -11,7 +11,10 @@ class FormatoIdeasEstudianteController extends Controller
 {
     public function index()
     {
-        $ideas = IdeasEstudiante::latest()->paginate(10);
+        $ideas = IdeasEstudiante::where('user_id', Auth::id())
+            ->latest()
+            ->paginate(10);
+
         return view('formats.ideas-estudiante.index', compact('ideas'));
     }
 
@@ -32,13 +35,11 @@ class FormatoIdeasEstudianteController extends Controller
             'vobo' => 'nullable|string|max:100',
         ]);
 
-        // 🔥 manejar checkboxes correctamente
         $validated['viabilidad'] = $request->has('viabilidad');
         $validated['pertinencia'] = $request->has('pertinencia');
         $validated['disponibilidad_docentes'] = $request->has('disponibilidad_docentes');
         $validated['calidad_titulo_objetivos'] = $request->has('calidad_titulo_objetivos');
 
-        // 🔥 usuario logueado (REQUERIDO)
         $validated['user_id'] = Auth::id();
 
         IdeasEstudiante::create($validated);

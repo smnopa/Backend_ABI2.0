@@ -4,11 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/**
- * MÓDULO: Formato de Ideas de Estudiante — Estudiante 2
- *
- * TODO: Completar las columnas con los campos reales del formato físico.
- */
 return new class extends Migration
 {
     public function up(): void
@@ -16,18 +11,45 @@ return new class extends Migration
         Schema::create('ideas_estudiante', function (Blueprint $table) {
             $table->id();
 
-            // Relaciones — ajustar según el diseño definitivo
-            $table->foreignId('student_id')->nullable()->constrained('students')->nullOnDelete();
-            $table->foreignId('project_id')->nullable()->constrained('projects')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
 
-            // --- TODO: Ajustar columnas según el formato físico ---
-            $table->string('titulo_idea');
-            $table->text('descripcion');
-            $table->text('justificacion');
-            $table->text('objetivos');
-            $table->date('fecha_presentacion');
-            $table->enum('estado', ['pendiente', 'aprobada', 'rechazada'])->default('pendiente');
-            // --- Fin columnas placeholder ---
+            /*
+            |--------------------------------------------------------------------------
+            | INFORMACIÓN BÁSICA
+            |--------------------------------------------------------------------------
+            */
+
+            $table->string('titulo');
+            $table->string('docente')->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | CONCEPTO DE EVALUACIÓN
+            |--------------------------------------------------------------------------
+            */
+
+            $table->enum('concepto', ['aprobada', 'no_aprobada'])->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | CRITERIOS DE EVALUACIÓN
+            |--------------------------------------------------------------------------
+            */
+
+            $table->boolean('viabilidad')->default(false);
+            $table->boolean('pertinencia')->default(false);
+            $table->boolean('disponibilidad_docentes')->default(false);
+            $table->boolean('calidad_titulo_objetivos')->default(false);
+
+            /*
+            |--------------------------------------------------------------------------
+            | REGISTRO Y SEGUIMIENTO
+            |--------------------------------------------------------------------------
+            */
+
+            $table->text('observaciones')->nullable();
+            $table->string('numero_acta')->nullable();
+            $table->string('vobo')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
