@@ -146,4 +146,13 @@ class FormatoActaReunionController extends Controller
             ->route('formatos.acta-reunion.index')
             ->with('success', 'Acta de reunión eliminada correctamente.');
     }
+    public function exportPdf(ActaReunion $actaReunion)
+{
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+        'formats.acta-reunion.pdf',
+        compact('actaReunion')
+    );
+
+    return $pdf->download('acta_reunion_' . $actaReunion->id . '.pdf');
+}
 }

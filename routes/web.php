@@ -174,6 +174,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:research_staff,professor,committee_leader'])->prefix('formatos')->name('formatos.')->group(function () {
     Route::resource('acta-reunion', FormatoActaReunionController::class);
     Route::resource('ficha-propuesta', FormatoFichaPropuestaController::class);
+    Route::get('acta-reunion/{actaReunion}/pdf',[FormatoActaReunionController::class, 'exportPdf'])->name('acta-reunion.pdf');
 });
 
 // Formato de Ideas de Estudiante — acceso: student, research_staff

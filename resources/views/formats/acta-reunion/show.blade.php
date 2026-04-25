@@ -26,10 +26,20 @@
             </div>
 
             <div class="col-auto ms-auto d-print-none">
-                <a href="{{ route('formatos.acta-reunion.edit', $actaReunion) }}" class="btn btn-primary">
+
+                <a href="{{ route('formatos.acta-reunion.pdf', $actaReunion) }}"
+                   class="btn btn-success"
+                   target="_blank">
+                    <i class="ti ti-file-download me-1"></i>
+                    Exportar PDF
+                </a>
+
+                <a href="{{ route('formatos.acta-reunion.edit', $actaReunion) }}"
+                   class="btn btn-primary">
                     <i class="ti ti-edit me-1"></i>
                     Editar
                 </a>
+
             </div>
 
         </div>
@@ -91,19 +101,8 @@
                     <dt class="col-sm-3">Desarrollo de la Reunión</dt>
                     <dd class="col-sm-9">{{ $actaReunion->desarrollo_reunion ?? '—' }}</dd>
 
-                    <dt class="col-sm-3">Actividades</dt>
-                    <dd class="col-sm-9">{{ $actaReunion->actividades ?? '—' }}</dd>
-
-                    <dt class="col-sm-3">Responsable</dt>
-                    <dd class="col-sm-9">{{ $actaReunion->responsable ?? '—' }}</dd>
-
-                    <dt class="col-sm-3">Fecha Límite</dt>
-                    <dd class="col-sm-9">
-                        {{ $actaReunion->fecha_limite?->format('d/m/Y') ?? '—' }}
-                    </dd>
-
-                    <dt class="col-sm-3">Evidencia</dt>
-                    <dd class="col-sm-9">{{ $actaReunion->evidencia ?? '—' }}</dd>
+                    <dt class="col-sm-3">Plan de Acción</dt>
+                    <dd class="col-sm-9">{{ $actaReunion->plan_accion ?? '—' }}</dd>
 
                     <dt class="col-sm-3">Eficacia (%)</dt>
                     <dd class="col-sm-9">{{ $actaReunion->eficacia_reunion ?? '—' }}</dd>
