@@ -5,20 +5,12 @@ namespace App\Http\Controllers\Formats;
 use App\Http\Controllers\Controller;
 use App\Models\ActaReunion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-/**
- * MÓDULO: Acta de Reunión
- * RESPONSABLE: Estudiante 1
- *
- * TODO: Completar todos los métodos con la lógica de negocio correspondiente.
- * TODO: Analizar el formato físico del acta para definir los campos exactos.
- * TODO: Usar role-scoped models si el rol lo requiere (ver app/Models/Professor/).
- */
 class FormatoActaReunionController extends Controller
 {
     public function index()
     {
-        // TODO: Obtener actas paginadas del usuario autenticado o de su programa
         $actas = ActaReunion::latest()->paginate(10);
 
         return view('formats.acta-reunion.index', compact('actas'));
@@ -26,27 +18,94 @@ class FormatoActaReunionController extends Controller
 
     public function create()
     {
-        // TODO: Pasar al view los datos necesarios (proyectos, usuarios, etc.)
         return view('formats.acta-reunion.create');
     }
 
     public function store(Request $request)
     {
-        // TODO: Validar y persistir el acta
         $validated = $request->validate([
-            // TODO: Definir reglas de validación según los campos del formato físico
-            'fecha_reunion'    => 'required|date',
-            'lugar'            => 'required|string|max:255',
-            'asistentes'       => 'required|string',
-            'temas_tratados'   => 'required|string',
-            'acuerdos'         => 'required|string',
-            'compromisos'      => 'nullable|string',
-            'proxima_reunion'  => 'nullable|date',
+            /*
+            |--------------------------------------------------------------------------
+            | INFORMACIÓN GENERAL
+            |--------------------------------------------------------------------------
+            */
+
+            'tema_agenda_propuesta' => 'required|string',
+            'investigador_nombre' => 'required|string|max:255',
+            'grupo_investigacion' => 'required|string|max:255',
+            'programa_academico' => 'required|string|max:255',
+            'fecha_realizacion' => 'required|date',
+            'medio_ubicacion' => 'required|string|max:255',
+            'hora_inicial' => 'nullable',
+            'hora_finaliza' => 'nullable',
+            'orden_dia' => 'nullable|string',
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASISTENTES
+            |--------------------------------------------------------------------------
+            */
+
+            'asistentes_listado' => 'nullable|string',
+            'docentes_asistentes' => 'nullable|string',
+            'estudiantes_asistentes' => 'nullable|string',
+
+            /*
+            |--------------------------------------------------------------------------
+            | DESARROLLO DE LA REUNIÓN
+            |--------------------------------------------------------------------------
+            */
+
+            'desarrollo_reunion' => 'nullable|string',
+
+            /*
+            |--------------------------------------------------------------------------
+            | PLAN DE ACCIÓN
+            |--------------------------------------------------------------------------
+            */
+
+            'actividades' => 'nullable|string',
+            'responsable' => 'nullable|string|max:255',
+            'fecha_limite' => 'nullable|date',
+            'evidencia' => 'nullable|string',
+
+            /*
+            |--------------------------------------------------------------------------
+            | EFICACIA DE LA REUNIÓN
+            |--------------------------------------------------------------------------
+            */
+
+            'eficacia_reunion' => 'nullable|integer|min:0|max:100',
+
+            /*
+            |--------------------------------------------------------------------------
+            | PRÓXIMA REUNIÓN
+            |--------------------------------------------------------------------------
+            */
+
+            'proxima_reunion_fecha' => 'nullable|date',
+            'proxima_reunion_lugar' => 'nullable|string|max:255',
+            'proxima_reunion_hora' => 'nullable',
+
+            /*
+            |--------------------------------------------------------------------------
+            | FIRMAS
+            |--------------------------------------------------------------------------
+            */
+
+            'preparado_por' => 'nullable|string|max:255',
+            'aprobado_por' => 'nullable|string|max:255',
+            'revisado_por' => 'nullable|string|max:255',
+            'aprobado_por_director' => 'nullable|string|max:255',
         ]);
+
+        // Guardar usuario autenticado automáticamente
+        $validated['elaborado_por'] = Auth::id();
 
         ActaReunion::create($validated);
 
-        return redirect()->route('formatos.acta-reunion.index')
+        return redirect()
+            ->route('formatos.acta-reunion.index')
             ->with('success', 'Acta de reunión creada exitosamente.');
     }
 
@@ -62,28 +121,38 @@ class FormatoActaReunionController extends Controller
 
     public function update(Request $request, ActaReunion $actaReunion)
     {
-        // TODO: Validar y actualizar
         $validated = $request->validate([
-            'fecha_reunion'   => 'required|date',
-            'lugar'           => 'required|string|max:255',
-            'asistentes'      => 'required|string',
-            'temas_tratados'  => 'required|string',
-            'acuerdos'        => 'required|string',
-            'compromisos'     => 'nullable|string',
-            'proxima_reunion' => 'nullable|date',
+            'tema_agenda_propuesta' => 'required|string',
+            'investigador_nombre' => 'required|string|max:255',
+            'grupo_investigacion' => 'required|string|max:255',
+            'programa_academico' => 'required|string|max:255',
+            'fecha_realizacion' => 'required|date',
+            'medio_ubicacion' => 'required|string|max:255',
+            'eficacia_reunion' => 'nullable|integer|min:0|max:100',
         ]);
 
         $actaReunion->update($validated);
 
-        return redirect()->route('formatos.acta-reunion.index')
-            ->with('success', 'Acta de reunión actualizada.');
+        return redirect()
+            ->route('formatos.acta-reunion.index')
+            ->with('success', 'Acta de reunión actualizada correctamente.');
     }
 
     public function destroy(ActaReunion $actaReunion)
     {
         $actaReunion->delete();
 
-        return redirect()->route('formatos.acta-reunion.index')
-            ->with('success', 'Acta de reunión eliminada.');
+        return redirect()
+            ->route('formatos.acta-reunion.index')
+            ->with('success', 'Acta de reunión eliminada correctamente.');
     }
+    public function exportPdf(ActaReunion $actaReunion)
+{
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+        'formats.acta-reunion.pdf',
+        compact('actaReunion')
+    );
+
+    return $pdf->download('acta_reunion_' . $actaReunion->id . '.pdf');
+}
 }
