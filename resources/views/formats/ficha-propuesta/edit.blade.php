@@ -28,16 +28,6 @@
 <div class="page-body">
     <div class="container-xl">
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
         <form action="{{ route('formatos.ficha-propuesta.update', $fichaPropuesta) }}" method="POST">
             @csrf
             @method('PUT')
@@ -48,6 +38,15 @@
                     <h3 class="card-title">1. Información General del Tema</h3>
                 </div>
                 <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Ciudad</label>

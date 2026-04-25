@@ -33,12 +33,6 @@ class IdeasEstudiante extends Model
         'calidad_titulo_objetivos' => 'boolean',
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | RELACIONES (OPCIONAL PERO RECOMENDADO)
-    |--------------------------------------------------------------------------
-    */
-
     public function user()
     {
         return $this->belongsTo(User::class);

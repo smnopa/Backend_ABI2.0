@@ -6,16 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * MÓDULO: Ficha de Propuesta de Tema al Banco de Proyectos Docentes — Estudiante 3
- *
- * Campos del formulario organizados en 5 secciones:
- * 1. Información General: ciudad, fecha_propuesta, cantidad_estudiantes, tiempo_ejecucion_meses
- * 2. Datos del Tema: titulo_propuesta, tipo_investigacion, linea_investigacion_id, area_tematica_id
- * 3. Objetivos: objetivo_general, objetivo_especifico_1/2/3
- * 4. Pertinencia y Viabilidad: pertinencia_grupo_investigacion, disponibilidad_docentes, etc.
- * 5. Descripción: descripcion, ods_objetivos_desarrollo_sostenible, plan_desarrollo_nacional_departamental_municipal
- */
 class FichaPropuesta extends Model
 {
     use HasFactory, SoftDeletes;

@@ -9,25 +9,16 @@ use App\Models\InvestigationLine;
 use App\Models\ThematicArea;
 use Illuminate\Http\Request;
 
-/**
- * MÓDULO: Ficha de Propuesta de Tema al Banco de Proyectos Docentes
- * RESPONSABLE: Estudiante 3
- *
- * Gestión completa de fichas de propuesta de temas con 5 secciones:
- * 1. Información General
- * 2. Datos del Tema
- * 3. Objetivos
- * 4. Pertinencia y Viabilidad
- * 5. Descripción y Contexto
- */
 class FormatoFichaPropuestaController extends Controller
 {
-    /**
-     * Listar todas las fichas del profesor autenticado
-     */
     public function index()
     {
         $profesor = AuthUserHelper::fullUser()->professor;
+
+        if (! $profesor) {
+            abort(403);
+        }
+
         $fichas = FichaPropuesta::where('professor_id', $profesor->id)
             ->latest()
             ->paginate(10);
@@ -35,9 +26,6 @@ class FormatoFichaPropuestaController extends Controller
         return view('formats.ficha-propuesta.index', compact('fichas'));
     }
 
-    /**
-     * Mostrar formulario de creación
-     */
     public function create()
     {
         $lineas = InvestigationLine::all();
@@ -46,9 +34,6 @@ class FormatoFichaPropuestaController extends Controller
         return view('formats.ficha-propuesta.create', compact('lineas', 'areas'));
     }
 
-    /**
-     * Guardar nueva ficha con validación completa de todos los campos
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -82,8 +67,13 @@ class FormatoFichaPropuestaController extends Controller
             'plan_desarrollo_nacional_departamental_municipal' => 'nullable|string',
         ]);
 
-        // Asignar automáticamente el profesor autenticado
-        $validated['professor_id'] = AuthUserHelper::fullUser()->professor->id;
+        $profesor = AuthUserHelper::fullUser()->professor;
+
+        if (! $profesor) {
+            abort(403);
+        }
+
+        $validated['professor_id'] = $profesor->id;
 
         FichaPropuesta::create($validated);
 
@@ -91,17 +81,11 @@ class FormatoFichaPropuestaController extends Controller
             ->with('success', 'Ficha de propuesta creada exitosamente.');
     }
 
-    /**
-     * Mostrar detalle de una ficha
-     */
     public function show(FichaPropuesta $fichaPropuesta)
     {
         return view('formats.ficha-propuesta.show', compact('fichaPropuesta'));
     }
 
-    /**
-     * Mostrar formulario de edición
-     */
     public function edit(FichaPropuesta $fichaPropuesta)
     {
         $lineas = InvestigationLine::all();
@@ -110,9 +94,6 @@ class FormatoFichaPropuestaController extends Controller
         return view('formats.ficha-propuesta.edit', compact('fichaPropuesta', 'lineas', 'areas'));
     }
 
-    /**
-     * Actualizar ficha con validación completa
-     */
     public function update(Request $request, FichaPropuesta $fichaPropuesta)
     {
         $validated = $request->validate([
@@ -152,9 +133,6 @@ class FormatoFichaPropuestaController extends Controller
             ->with('success', 'Ficha de propuesta actualizada exitosamente.');
     }
 
-    /**
-     * Eliminar ficha (soft delete)
-     */
     public function destroy(FichaPropuesta $fichaPropuesta)
     {
         $fichaPropuesta->delete();

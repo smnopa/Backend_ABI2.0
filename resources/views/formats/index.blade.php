@@ -23,8 +23,10 @@
             </div>
         @endif
 
+        @php $role = auth()->user()->role; @endphp
+
         <div class="row row-cards">
-            {{-- Acta de Reunión --}}
+            {{-- Acta de Reunión — visible para todos --}}
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
@@ -50,57 +52,61 @@
                 </div>
             </div>
 
-            {{-- Formato de Ideas de Estudiante --}}
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="bg-green text-white avatar me-3">
-                                <i class="ti ti-bulb fs-2"></i>
-                            </span>
-                            <div>
-                                <h3 class="card-title mb-0">Ideas de Estudiante</h3>
-                                <p class="text-muted small mb-0">Formato de propuesta de ideas</p>
+            {{-- Ideas de Estudiante — solo estudiantes y research_staff --}}
+            @if (in_array($role, ['student', 'research_staff']))
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="bg-green text-white avatar me-3">
+                                    <i class="ti ti-bulb fs-2"></i>
+                                </span>
+                                <div>
+                                    <h3 class="card-title mb-0">Ideas de Estudiante</h3>
+                                    <p class="text-muted small mb-0">Formato de propuesta de ideas</p>
+                                </div>
                             </div>
+                            <p class="text-muted">
+                                Permite a los estudiantes registrar y presentar sus ideas de
+                                proyecto ante el comité evaluador.
+                            </p>
                         </div>
-                        <p class="text-muted">
-                            Permite a los estudiantes registrar y presentar sus ideas de
-                            proyecto ante el comité evaluador.
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="{{ route('formatos.ideas-estudiante.index') }}" class="btn btn-success w-100">
-                            <i class="ti ti-arrow-right me-1"></i> Ir al formato
-                        </a>
+                        <div class="card-footer">
+                            <a href="{{ route('formatos.ideas-estudiante.index') }}" class="btn btn-success w-100">
+                                <i class="ti ti-arrow-right me-1"></i> Ir al formato
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
-            {{-- Ficha de Propuesta Docente --}}
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="bg-orange text-white avatar me-3">
-                                <i class="ti ti-file-description fs-2"></i>
-                            </span>
-                            <div>
-                                <h3 class="card-title mb-0">Ficha de Propuesta</h3>
-                                <p class="text-muted small mb-0">Banco de proyectos docentes</p>
+            {{-- Ficha de Propuesta — solo profesores, committee_leader y research_staff --}}
+            @if (in_array($role, ['professor', 'committee_leader', 'research_staff']))
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="bg-orange text-white avatar me-3">
+                                    <i class="ti ti-file-description fs-2"></i>
+                                </span>
+                                <div>
+                                    <h3 class="card-title mb-0">Ficha de Propuesta</h3>
+                                    <p class="text-muted small mb-0">Banco de proyectos docentes</p>
+                                </div>
                             </div>
+                            <p class="text-muted">
+                                Permite a los profesores registrar propuestas de temas de grado
+                                en el banco de proyectos institucional.
+                            </p>
                         </div>
-                        <p class="text-muted">
-                            Permite a los profesores registrar propuestas de temas de grado
-                            en el banco de proyectos institucional.
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="{{ route('formatos.ficha-propuesta.index') }}" class="btn btn-warning w-100">
-                            <i class="ti ti-arrow-right me-1"></i> Ir al formato
-                        </a>
+                        <div class="card-footer">
+                            <a href="{{ route('formatos.ficha-propuesta.index') }}" class="btn btn-warning w-100">
+                                <i class="ti ti-arrow-right me-1"></i> Ir al formato
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>
