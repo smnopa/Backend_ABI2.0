@@ -5,48 +5,46 @@ namespace App\Http\Controllers\Formats;
 use App\Http\Controllers\Controller;
 use App\Models\IdeasEstudiante;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-/**
- * MÓDULO: Formato de Ideas de Estudiante
- * RESPONSABLE: Estudiante 2
- *
- * TODO: Completar todos los métodos con la lógica de negocio correspondiente.
- * TODO: Analizar el formato físico para definir los campos exactos.
- * TODO: Revisar si el formato se vincula a un proyecto existente o es previo al proyecto.
- */
 class FormatoIdeasEstudianteController extends Controller
 {
     public function index()
     {
-        // TODO: Filtrar ideas por el estudiante autenticado o por programa
         $ideas = IdeasEstudiante::latest()->paginate(10);
-
         return view('formats.ideas-estudiante.index', compact('ideas'));
     }
 
     public function create()
     {
-        // TODO: Pasar al view datos de programas, líneas de investigación, etc.
         return view('formats.ideas-estudiante.create');
     }
 
     public function store(Request $request)
     {
-        // TODO: Validar y persistir la idea
         $validated = $request->validate([
-            // TODO: Ajustar según los campos del formato físico
-            'titulo_idea'       => 'required|string|max:255',
-            'descripcion'       => 'required|string',
-            'justificacion'     => 'required|string',
-            'objetivos'         => 'required|string',
-            'fecha_presentacion'=> 'required|date',
+            'titulo' => 'required|string|max:255',
+            'docente' => 'nullable|string|max:255',
+            'concepto' => 'nullable|in:aprobada,no_aprobada',
+
+            'observaciones' => 'nullable|string',
+            'numero_acta' => 'nullable|string|max:100',
+            'vobo' => 'nullable|string|max:100',
         ]);
 
-        // TODO: Asociar el student_id del usuario autenticado
+        // 🔥 manejar checkboxes correctamente
+        $validated['viabilidad'] = $request->has('viabilidad');
+        $validated['pertinencia'] = $request->has('pertinencia');
+        $validated['disponibilidad_docentes'] = $request->has('disponibilidad_docentes');
+        $validated['calidad_titulo_objetivos'] = $request->has('calidad_titulo_objetivos');
+
+        // 🔥 usuario logueado (REQUERIDO)
+        $validated['user_id'] = Auth::id();
+
         IdeasEstudiante::create($validated);
 
         return redirect()->route('formatos.ideas-estudiante.index')
-            ->with('success', 'Idea registrada exitosamente.');
+            ->with('success', 'Idea registrada correctamente.');
     }
 
     public function show(IdeasEstudiante $ideasEstudiante)
@@ -62,17 +60,24 @@ class FormatoIdeasEstudianteController extends Controller
     public function update(Request $request, IdeasEstudiante $ideasEstudiante)
     {
         $validated = $request->validate([
-            'titulo_idea'        => 'required|string|max:255',
-            'descripcion'        => 'required|string',
-            'justificacion'      => 'required|string',
-            'objetivos'          => 'required|string',
-            'fecha_presentacion' => 'required|date',
+            'titulo' => 'required|string|max:255',
+            'docente' => 'nullable|string|max:255',
+            'concepto' => 'nullable|in:aprobada,no_aprobada',
+
+            'observaciones' => 'nullable|string',
+            'numero_acta' => 'nullable|string|max:100',
+            'vobo' => 'nullable|string|max:100',
         ]);
+
+        $validated['viabilidad'] = $request->has('viabilidad');
+        $validated['pertinencia'] = $request->has('pertinencia');
+        $validated['disponibilidad_docentes'] = $request->has('disponibilidad_docentes');
+        $validated['calidad_titulo_objetivos'] = $request->has('calidad_titulo_objetivos');
 
         $ideasEstudiante->update($validated);
 
         return redirect()->route('formatos.ideas-estudiante.index')
-            ->with('success', 'Idea actualizada exitosamente.');
+            ->with('success', 'Idea actualizada correctamente.');
     }
 
     public function destroy(IdeasEstudiante $ideasEstudiante)
