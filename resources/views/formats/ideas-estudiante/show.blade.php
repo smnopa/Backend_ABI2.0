@@ -27,6 +27,13 @@
 
             <div class="col-auto ms-auto d-print-none">
 
+                <a href="{{ route('formatos.ideas-estudiante.pdf', $ideasEstudiante) }}"
+                   class="btn btn-success me-2"
+                   target="_blank">
+                    <i class="ti ti-file-download me-1"></i>
+                    Exportar PDF
+                </a>
+
                 <a href="{{ route('formatos.ideas-estudiante.edit', $ideasEstudiante) }}"
                    class="btn btn-primary">
                     <i class="ti ti-edit me-1"></i>

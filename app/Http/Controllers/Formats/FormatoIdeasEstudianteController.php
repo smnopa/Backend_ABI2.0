@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Formats;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Formats\Concerns\GeneratesPdf;
 use App\Models\IdeasEstudiante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FormatoIdeasEstudianteController extends Controller
 {
+    use GeneratesPdf;
     public function index()
     {
         $ideas = IdeasEstudiante::where('user_id', Auth::id())
@@ -87,5 +89,14 @@ class FormatoIdeasEstudianteController extends Controller
 
         return redirect()->route('formatos.ideas-estudiante.index')
             ->with('success', 'Idea eliminada.');
+    }
+
+    public function exportPdf(IdeasEstudiante $ideasEstudiante)
+    {
+        return $this->generarPdf(
+            'formats.ideas-estudiante.pdf',
+            compact('ideasEstudiante'),
+            'idea_estudiante_' . $ideasEstudiante->id . '.pdf'
+        );
     }
 }

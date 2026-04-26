@@ -170,14 +170,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('formatos', fn() => view('formats.index'))->name('formatos.index');
 });
 
-// Acta de Reunión — acceso: professor, committee_leader, research_staff
+// Acta de Reunión y Ficha de Propuesta — acceso: professor, committee_leader, research_staff
 Route::middleware(['auth', 'role:research_staff,professor,committee_leader'])->prefix('formatos')->name('formatos.')->group(function () {
     Route::resource('acta-reunion', FormatoActaReunionController::class);
+    Route::get('acta-reunion/{actaReunion}/pdf', [FormatoActaReunionController::class, 'exportPdf'])->name('acta-reunion.pdf');
+
     Route::resource('ficha-propuesta', FormatoFichaPropuestaController::class);
-    Route::get('acta-reunion/{actaReunion}/pdf',[FormatoActaReunionController::class, 'exportPdf'])->name('acta-reunion.pdf');
+    Route::get('ficha-propuesta/{fichaPropuesta}/pdf', [FormatoFichaPropuestaController::class, 'exportPdf'])->name('ficha-propuesta.pdf');
 });
 
-// Formato de Ideas de Estudiante — acceso: student, research_staff
+// Ideas de Estudiante — acceso: student, research_staff
 Route::middleware(['auth', 'role:research_staff,student'])->prefix('formatos')->name('formatos.')->group(function () {
     Route::resource('ideas-estudiante', FormatoIdeasEstudianteController::class);
+    Route::get('ideas-estudiante/{ideasEstudiante}/pdf', [FormatoIdeasEstudianteController::class, 'exportPdf'])->name('ideas-estudiante.pdf');
 });

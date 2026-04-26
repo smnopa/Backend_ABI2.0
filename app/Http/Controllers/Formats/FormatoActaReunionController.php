@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Formats;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Formats\Concerns\GeneratesPdf;
 use App\Models\ActaReunion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FormatoActaReunionController extends Controller
 {
+    use GeneratesPdf;
     public function index()
     {
         $actas = ActaReunion::latest()->paginate(10);
@@ -147,12 +149,11 @@ class FormatoActaReunionController extends Controller
             ->with('success', 'Acta de reunión eliminada correctamente.');
     }
     public function exportPdf(ActaReunion $actaReunion)
-{
-    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
-        'formats.acta-reunion.pdf',
-        compact('actaReunion')
-    );
-
-    return $pdf->download('acta_reunion_' . $actaReunion->id . '.pdf');
-}
+    {
+        return $this->generarPdf(
+            'formats.acta-reunion.pdf',
+            compact('actaReunion'),
+            'acta_reunion_' . $actaReunion->id . '.pdf'
+        );
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Formats;
 
 use App\Helpers\AuthUserHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Formats\Concerns\GeneratesPdf;
 use App\Models\FichaPropuesta;
 use App\Models\InvestigationLine;
 use App\Models\ThematicArea;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 
 class FormatoFichaPropuestaController extends Controller
 {
+    use GeneratesPdf;
     public function index()
     {
         $profesor = AuthUserHelper::fullUser()->professor;
@@ -139,5 +141,14 @@ class FormatoFichaPropuestaController extends Controller
 
         return redirect()->route('formatos.ficha-propuesta.index')
             ->with('success', 'Ficha de propuesta eliminada.');
+    }
+
+    public function exportPdf(FichaPropuesta $fichaPropuesta)
+    {
+        return $this->generarPdf(
+            'formats.ficha-propuesta.pdf',
+            compact('fichaPropuesta'),
+            'ficha_propuesta_' . $fichaPropuesta->id . '.pdf'
+        );
     }
 }
