@@ -22,9 +22,8 @@ use App\Http\Controllers\BankApprovedIdeasForStudentsController;
 use App\Http\Controllers\BankApprovedIdeasForProfessorsController;
 use App\Http\Controllers\CityProgramController;
 use App\Http\Controllers\BankApprovedIdeasAssignController;
-use App\Http\Controllers\Formats\FormatoActaReunionController;
-use App\Http\Controllers\Formats\FormatoIdeasEstudianteController;
-use App\Http\Controllers\Formats\FormatoFichaPropuestaController;
+use App\Http\Controllers\Formats\FormatoTipoController;
+use App\Http\Controllers\Formats\FormatoRegistroController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -160,27 +159,27 @@ Route::middleware(['auth', 'role:committee_leader'])->group(function () {
 });
 
 // =============================================================================
-// MÓDULO DE FORMATOS
-// Responsable del módulo: líder del equipo de formatos
-// Sub-módulos: Acta de Reunión (E1), Ideas Estudiante (E2), Ficha Propuesta (E3)
+// MÓDULO DE FORMATOS — Sistema dinámico
 // =============================================================================
 
-// Hub de entrada al módulo (todos los roles autenticados)
-Route::middleware(['auth'])->group(function () {
-    Route::get('formatos', fn() => view('formats.index'))->name('formatos.index');
-});
+Route::middleware(['auth'])->prefix('formatos')->name('formatos.')->group(function () {
 
-// Acta de Reunión y Ficha de Propuesta — acceso: professor, committee_leader, research_staff
-Route::middleware(['auth', 'role:research_staff,professor,committee_leader'])->prefix('formatos')->name('formatos.')->group(function () {
-    Route::resource('acta-reunion', FormatoActaReunionController::class);
-    Route::get('acta-reunion/{actaReunion}/pdf', [FormatoActaReunionController::class, 'exportPdf'])->name('acta-reunion.pdf');
+    // Hub
+    Route::get('/', [FormatoTipoController::class, 'hub'])->name('index');
 
-    Route::resource('ficha-propuesta', FormatoFichaPropuestaController::class);
-    Route::get('ficha-propuesta/{fichaPropuesta}/pdf', [FormatoFichaPropuestaController::class, 'exportPdf'])->name('ficha-propuesta.pdf');
-});
+    // Builder — solo research_staff
+    Route::middleware('role:research_staff')->resource('tipos', FormatoTipoController::class);
 
-// Ideas de Estudiante — acceso: student, research_staff
-Route::middleware(['auth', 'role:research_staff,student'])->prefix('formatos')->name('formatos.')->group(function () {
-    Route::resource('ideas-estudiante', FormatoIdeasEstudianteController::class);
-    Route::get('ideas-estudiante/{ideasEstudiante}/pdf', [FormatoIdeasEstudianteController::class, 'exportPdf'])->name('ideas-estudiante.pdf');
+    // Registros genéricos — acceso controlado en el controlador por roles del formato
+    Route::prefix('{tipo}/registros')->name('registros.')->group(function () {
+        Route::get('/',           [FormatoRegistroController::class, 'index'])->name('index');
+        Route::get('/crear',      [FormatoRegistroController::class, 'create'])->name('create');
+        Route::post('/',          [FormatoRegistroController::class, 'store'])->name('store');
+        Route::get('/{registro}', [FormatoRegistroController::class, 'show'])->name('show');
+        Route::get('/{registro}/editar', [FormatoRegistroController::class, 'edit'])->name('edit');
+        Route::put('/{registro}', [FormatoRegistroController::class, 'update'])->name('update');
+        Route::delete('/{registro}', [FormatoRegistroController::class, 'destroy'])->name('destroy');
+        Route::get('/{registro}/pdf', [FormatoRegistroController::class, 'exportPdf'])->name('pdf');
+    });
+
 });

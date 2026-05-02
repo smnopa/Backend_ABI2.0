@@ -53,6 +53,7 @@ class DatabaseSeeder extends Seeder
             VersionsTableSeeder::class,
             ContentsTableSeeder::class,
             ContentVersionTableSeeder::class,
+            FormatoSeeder::class,
         ]);
     }
 }

@@ -3,6 +3,7 @@
 @section('title', 'Módulo de Formatos')
 
 @section('content')
+
 <div class="page-header d-print-none">
     <div class="container-xl">
         <div class="row g-2 align-items-center">
@@ -10,104 +11,57 @@
                 <h2 class="page-title">Módulo de Formatos</h2>
                 <p class="text-muted mb-0">Gestión de formatos institucionales para proyectos de grado.</p>
             </div>
+            @if (auth()->user()->role === 'research_staff')
+            <div class="col-auto ms-auto">
+                <a href="{{ route('formatos.tipos.index') }}" class="btn btn-primary">
+                    <i class="ti ti-settings me-1"></i> Gestionar Formatos
+                </a>
+                <a href="{{ route('formatos.tipos.create') }}" class="btn btn-success ms-2">
+                    <i class="ti ti-plus me-1"></i> Nuevo Formato
+                </a>
+            </div>
+            @endif
         </div>
     </div>
 </div>
 
 <div class="page-body">
     <div class="container-xl">
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+        @if ($formatos->isEmpty())
+            <div class="alert alert-info">No hay formatos disponibles para tu rol.</div>
+        @else
+            <div class="row row-cards">
+                @foreach ($formatos as $formato)
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="bg-{{ $formato->color }} text-white avatar me-3">
+                                        <i class="{{ $formato->icono }} fs-2"></i>
+                                    </span>
+                                    <div>
+                                        <h3 class="card-title mb-0">{{ $formato->nombre }}</h3>
+                                        @if ($formato->codigo)
+                                            <p class="text-muted small mb-0">{{ $formato->codigo }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                <p class="text-muted">{{ $formato->descripcion }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ route('formatos.registros.index', $formato) }}"
+                                   class="btn btn-{{ $formato->color }} w-100">
+                                    <i class="ti ti-arrow-right me-1"></i> Ir al formato
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         @endif
 
-        @php $role = auth()->user()->role; @endphp
-
-        <div class="row row-cards">
-            {{-- Acta de Reunión — visible para todos --}}
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="bg-blue text-white avatar me-3">
-                                <i class="ti ti-writing fs-2"></i>
-                            </span>
-                            <div>
-                                <h3 class="card-title mb-0">Acta de Reunión</h3>
-                                <p class="text-muted small mb-0">Registro de reuniones del proyecto</p>
-                            </div>
-                        </div>
-                        <p class="text-muted">
-                            Documenta las reuniones de seguimiento, acuerdos y compromisos
-                            establecidos entre los participantes del proyecto.
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="{{ route('formatos.acta-reunion.index') }}" class="btn btn-primary w-100">
-                            <i class="ti ti-arrow-right me-1"></i> Ir al formato
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Ideas de Estudiante — solo estudiantes y research_staff --}}
-            @if (in_array($role, ['student', 'research_staff']))
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <span class="bg-green text-white avatar me-3">
-                                    <i class="ti ti-bulb fs-2"></i>
-                                </span>
-                                <div>
-                                    <h3 class="card-title mb-0">Ideas de Estudiante</h3>
-                                    <p class="text-muted small mb-0">Formato de propuesta de ideas</p>
-                                </div>
-                            </div>
-                            <p class="text-muted">
-                                Permite a los estudiantes registrar y presentar sus ideas de
-                                proyecto ante el comité evaluador.
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="{{ route('formatos.ideas-estudiante.index') }}" class="btn btn-success w-100">
-                                <i class="ti ti-arrow-right me-1"></i> Ir al formato
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            {{-- Ficha de Propuesta — solo profesores, committee_leader y research_staff --}}
-            @if (in_array($role, ['professor', 'committee_leader', 'research_staff']))
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <span class="bg-orange text-white avatar me-3">
-                                    <i class="ti ti-file-description fs-2"></i>
-                                </span>
-                                <div>
-                                    <h3 class="card-title mb-0">Ficha de Propuesta</h3>
-                                    <p class="text-muted small mb-0">Banco de proyectos docentes</p>
-                                </div>
-                            </div>
-                            <p class="text-muted">
-                                Permite a los profesores registrar propuestas de temas de grado
-                                en el banco de proyectos institucional.
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <a href="{{ route('formatos.ficha-propuesta.index') }}" class="btn btn-warning w-100">
-                                <i class="ti ti-arrow-right me-1"></i> Ir al formato
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        </div>
     </div>
 </div>
+
 @endsection

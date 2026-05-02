@@ -18,3 +18,7 @@ yarn-error.log
 /.vscode
 .env
 docker-compose.yml
+/.claude
+CLAUDE.md
+AVANCES.md
+.phpunit.result.cache
